@@ -1,0 +1,190 @@
+"commState": "READY",
+"gameMode": "NORMAL",
+"gameId": 0,
+"losMode": false,
+"startingPlayer": 0,
+"attackingPlayer": 0,
+"defendingPlayer": 1,
+"currentPlayer": 0,
+"phasingPlayer": 0,
+"nextCounterId": 100,
+"players": [
+    {
+        "id": 0,
+        "name": "Bill",
+        "side": "German",
+        "nationality": "ge"
+    },
+],
+"currentPhase": "Rally",
+"currentTurn": 1,
+"message": null,
+"displayCounters": true,
+"targetGroups": null,
+"fireGroups": null,
+"targetHex": null,
+"scenario": {
+    "turns": 5,
+    "reinforcements": {
+        "0": [
+            {
+                "turn": 1,
+                "instructions": "Elements of the 1058th Grenadier Regiment: Enter along east edge",
+                "counterIds": [
+                    5,
+                    6,
+                    7,
+                    8
+                ]
+            },
+        ]
+    }
+},
+"map": {
+    "id": "mainMap",
+    "unCroppedWidth": 1800,
+    "width": 1180,
+    "height": 645,
+    "dx": 20,
+    "dy": 33,
+    "hexWidth": 56.25,
+    "hexHeight": 65.5,
+    "topMargin": 33,
+    "leftMargin": 39,
+    "rows": 10,
+    "cols": 22,
+    "unCroppedCols": 33
+},
+"counters": {
+    "0": {
+        "id": 0,
+        "nationality": "am",
+        "counterType": "am337H",
+        "elr": 99,
+        "selected": false,
+        "prepFire": false,
+        "desporationMorale": false,
+        "pinned": false,
+        "movement": false,
+        "advance": false,
+        "firstFire": false,
+        "finalFire": false,
+        "advFire": false,
+        "doubleTime": false,
+        "assaultMovement": false,
+        "wounded": false,
+        "melee": false,
+        "rally": false,
+        "preparingSmoke": false,
+        "deployedSmoked": false,
+        "placed": false 
+            "mmcId": { -> may only be in context of sidebar
+                ???
+                "label": ""
+        },
+        "smcMap": { -> may only be in context of sidebar
+                ????
+        }
+    },
+},
+"stacks": {
+    "11:5": {
+        "id": "11:5",
+        "hex": {
+            "col": 11,
+            "row": 5
+        },
+        "counterIds": [
+            0
+        ]
+    },
+},
+"currentHex": {
+    "row": 5,
+    "col": 8
+},
+"closeCombatData": {
+    "attackingGroupIds": [
+        32
+    ]	
+        "defendingGroupIds": [
+        24
+    ],
+    "selectedCounterIds": [],
+    "counterPairs": {},
+    "stackId": "34:34",
+    "attackingCounterIds": [
+        1,
+        2,
+        3
+    ],
+    "defendingCounterIds": [
+        4,
+        5,
+        6
+    ],
+    "newLeaders": []
+},
+"closeCombatGroups": {
+    "32": {
+        "id": 32,
+        "selected": true,
+        "attackingFirepower": 0,
+        "attackingDrm": 0,
+        "attackingCounterIds": [
+            1,
+            2,
+            3
+        ],
+        "defendingFirepower": 0,
+        "defendingDrm": 0,
+        "defendingCounterIds": [
+            4,
+            5,
+            6
+        ],
+        "odds": '',
+        "modifier": 0,
+        "ratio": 0,
+    },
+    "24": {
+        "id": 24,
+        "selected": true,
+        "attackingFirepower": 0,
+        "attackingDrm": 0,
+        "attackingCounterIds": [
+            4,
+            5,
+            6
+        ],
+        "defendingFirepower": 0,
+        "defendingDrm": 0,
+        "defendingCounterIds": [
+            1,
+            2,
+            3
+        ],
+        "odds": '',
+        "modifier": 0,
+        "ratio": 0
+    }
+},
+"fireGroups": [{
+    "id": "12:23",
+    "hex": {
+        "col": 12,
+        "row": 23
+    },
+    "counterIds": [
+        17,
+        18,
+        19
+    ]
+}],
+"defenseFireTargets":{
+    "hex":{
+        "row":1,
+        "col":10
+    },
+    "counterIds":[1,2,3]
+}

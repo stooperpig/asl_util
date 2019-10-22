@@ -1,0 +1,47 @@
+.app {
+  text-align: center;
+  height:100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: pink;
+}
+
+.app-header {
+  min-height:60px;
+  background-color:red;
+}
+
+.app-center {
+  flex:1;
+  overflow:auto;
+  background-color:green;
+
+  display:flex;
+  flex-direction:row;
+  justify-content: stretch;
+  /*
+  flex-grow:1;*/
+}
+
+
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: silver;
+}
+.content {
+  flex: 1;
+  overflow: auto;
+  background: pink;
+}
+
+.centerStyle {
+  height:600px;
+}
