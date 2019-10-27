@@ -1,7 +1,7 @@
 import React from 'react';
 import './Menu.css';
 import DropdownMenu from './DropdownMenu';
-import { createScenario, openScenario, deleteScenario, saveScenario } from './actions';
+import { createScenario, editScenario, deleteScenario, saveScenario } from './actions';
 import { connect } from 'react-redux';
 
 
@@ -10,7 +10,7 @@ class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
         this.handleCreate = this.handleCreate.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
@@ -19,8 +19,8 @@ class Menu extends React.PureComponent {
         this.props.createScenario();
     }
 
-    handleOpen() {
-        this.props.openScenario();
+    handleEdit() {
+        this.props.editScenario();
     }
 
     handleDelete() {
@@ -33,7 +33,7 @@ class Menu extends React.PureComponent {
 
     render() {
         let scenarioMenu = {
-            title: 'Scenario', subItems: [{ title: 'Create', handler: this.handleCreate }, { title: 'Open', handler: this.handleOpen }, { title: 'Delete', handler: this.handleDelete },
+            title: 'Scenario', subItems: [{ title: 'Create', handler: this.handleCreate }, { title: 'Edit', handler: this.handleEdit }, { title: 'Delete', handler: this.handleDelete },
                 { title: 'Save', handler: this.handleSave }]
         };
         return (
@@ -46,7 +46,7 @@ class Menu extends React.PureComponent {
 
 const mapDispatchToProps = {
     createScenario,
-    openScenario,
+    editScenario,
     deleteScenario,
     saveScenario
 };

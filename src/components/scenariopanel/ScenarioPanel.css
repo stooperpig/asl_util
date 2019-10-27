@@ -1,0 +1,9 @@
+.scenario-panel {
+    flex:1;
+    overflow:auto;
+    background-color:green;
+  
+    display:flex;
+    flex-direction:column;
+    justify-content: stretch;
+}

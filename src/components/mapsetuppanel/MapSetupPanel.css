@@ -1,0 +1,10 @@
+.map-setup-panel {
+    flex:1;
+    overflow:auto;
+    background-color:lightgray;
+    border-top: 1px solid darkgray;
+    margin-top:10px;
+    display:flex;
+    flex-direction:row;
+    justify-content: stretch;
+}

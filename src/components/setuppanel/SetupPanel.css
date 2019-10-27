@@ -1,0 +1,22 @@
+.setup-panel {
+    flex:1;
+    overflow:auto;
+    background-color:lightgray;
+    border: 1px solid black;
+    display:flex;
+    flex-direction:column;
+    justify-content: stretch;
+}
+
+.setup-panel-active-button {
+    background-color:green;
+    margin: 3px;
+}
+
+.setup-panel-button {
+    margin: 3px; 
+}
+
+.setup-panel-button-div {
+    text-align:left;
+}

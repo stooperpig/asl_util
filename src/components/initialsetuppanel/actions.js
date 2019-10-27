@@ -1,9 +1,5 @@
-import { CREATE_SCENARIO } from '../../constants/action-types';
-
 export const createScenario = () => {
     return (dispatch, getState) => {
-        let action = { type: CREATE_SCENARIO, payload: {} };
-        dispatch(action);
         //let state = getState();
         //axios.post('/saveGame', state)
         //    .then(function (res) {
@@ -15,7 +11,7 @@ export const createScenario = () => {
     };
 };
 
-export const editScenario = () => {
+export const openScenario = () => {
     return (dispatch, getState) => {
         // let { phasingPlayer, currentPlayer, currentPhase } = getState();
         // if (phasingPlayer === currentPlayer && currentPhase === Phases.MOVEMENT) {
@@ -38,7 +34,7 @@ export const deleteScenario = () => {
         // } else {
         //     dispatch({ type: UPDATE_STATUS_MESSAGE, payload: 'Placement occurs during phasing player\'s initial placement phase only' });
         // }
-    };
+    };    
 };
 
 export const saveScenario = () => {
@@ -51,5 +47,5 @@ export const saveScenario = () => {
         // } else {
         //     dispatch({ type: UPDATE_STATUS_MESSAGE, payload: 'Placement occurs during phasing player\'s initial placement phase only' });
         // }
-    };
+    };    
 };
