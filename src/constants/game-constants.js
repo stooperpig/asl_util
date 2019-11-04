@@ -4,19 +4,13 @@ export const AppModes = {
     HOME: 'Home'
 };
 
-export const Sides = {
-    SIDE_1: 'Side 1',
-    SIDE_2: 'Side 2'
-};
-
 export const Panels = {
     MAP: 'Map',
     INITIAL_PLACEMENTS: 'Initial Placements',
     REINFORCEMENTS: 'Reinforcements'
 };
 
-export const Nationalities = {
-    AMERICAN: {label:'American', code:'am'},
-    GERMAN: {label:'German', code:'ge'},
-    RUSSIAN: {label:'Russian', code:'ru'}
+export const BoardOrientation = {
+    FLIPPED: 'flipped',
+    NORMAL: 'normal'
 };

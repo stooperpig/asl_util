@@ -1,7 +1,7 @@
 import React from 'react';
 import './GeneralDataPanel.css';
 import ToggleButton from '../togglebutton/ToggleButton';
-import { Nationalities, Sides } from '../../constants/game-constants';
+import { Nationalities, Sides } from '../../constants/counter-types';
 import { updateScenarioData, updateNationalities } from './actions';
 import { connect } from 'react-redux';
 import { runInThisContext } from 'vm';
@@ -11,8 +11,8 @@ class GeneralDataPanel extends React.PureComponent {
         super(props);
         this.handleSetSetsupFirst = this.handleSetSetsupFirst.bind(this);
         this.handleSetMovesFirst = this.handleSetMovesFirst.bind(this);
-        this.handleUpdateSide1Nationalities = this.handleUpdateSide1Nationalities.bind(this);
-        this.handleUpdateSide2Nationalities = this.handleUpdateSide2Nationalities.bind(this);
+        this.handleUpdateAxisNationalities = this.handleUpdateAxisNationalities.bind(this);
+        this.handleUpdateAlliedNationalities = this.handleUpdateAlliedNationalities.bind(this);
         this.handleUpdateScenarioData = this.handleUpdateScenarioData.bind(this);
         this.scenarioName = React.createRef();
         this.scenarioId = React.createRef();
@@ -61,12 +61,12 @@ class GeneralDataPanel extends React.PureComponent {
         this.props.updateScenarioData('movesFirst', side);
     }
 
-    handleUpdateSide1Nationalities(nationality) {
-        this.props.updateNationalities(Sides.SIDE_1, nationality);
+    handleUpdateAxisNationalities(nationality) {
+        this.props.updateNationalities(Sides.AXIS, nationality);
     }
 
-    handleUpdateSide2Nationalities(nationality) {
-        this.props.updateNationalities(Sides.SIDE_2, nationality);
+    handleUpdateAlliedNationalities(nationality) {
+        this.props.updateNationalities(Sides.ALLIED, nationality);
     }
 
     buildNationalityFlags(nationalityCodes) {
@@ -79,8 +79,8 @@ class GeneralDataPanel extends React.PureComponent {
 
     render() {
         console.log('render generaldata panel')
-        let side1Nationalities = this.buildNationalityFlags(this.props.scenario.side1.nationalityCodes);
-        let side2Nationalities = this.buildNationalityFlags(this.props.scenario.side2.nationalityCodes);
+        let axisNationalities = this.buildNationalityFlags(this.props.scenario.axis.nationalityCodes);
+        let alliedNationalities = this.buildNationalityFlags(this.props.scenario.allied.nationalityCodes);
 
         return (
             <div className="general-data-panel">
@@ -88,26 +88,23 @@ class GeneralDataPanel extends React.PureComponent {
                 <label>Scenario Id: <input type="text" name="scenarioId" ref={this.scenarioId} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>Number of Turns: <input type="text" name="numberOfTurns" ref={this.numberOfTurns} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>
-                    Side 1 Nationalities:
-                    <ToggleButton label={Nationalities.AMERICAN.label} activationValue={Nationalities.AMERICAN.code} currentValue={side1Nationalities.AMERICAN} handleClick={this.handleUpdateSide1Nationalities} />
-                    <ToggleButton label={Nationalities.GERMAN.label} activationValue={Nationalities.GERMAN.code} currentValue={side1Nationalities.GERMAN} handleClick={this.handleUpdateSide1Nationalities} />
-                    <ToggleButton label={Nationalities.RUSSIAN.label} activationValue={Nationalities.RUSSIAN.code} currentValue={side1Nationalities.RUSSIAN} handleClick={this.handleUpdateSide1Nationalities} />
+                    Axis Nationalities:
+                    <ToggleButton label={Nationalities.GERMAN.label} activationValue={Nationalities.GERMAN.code} currentValue={axisNationalities.GERMAN} handleClick={this.handleUpdateAxisNationalities} />
                 </label><br />
                 <label>
-                    Side 2 Nationalities:
-                    <ToggleButton label={Nationalities.AMERICAN.label} activationValue={Nationalities.AMERICAN.code} currentValue={side2Nationalities.AMERICAN} handleClick={this.handleUpdateSide2Nationalities} />
-                    <ToggleButton label={Nationalities.GERMAN.label} activationValue={Nationalities.GERMAN.code} currentValue={side2Nationalities.GERMAN} handleClick={this.handleUpdateSide2Nationalities} />
-                    <ToggleButton label={Nationalities.RUSSIAN.label} activationValue={Nationalities.RUSSIAN.code} currentValue={side2Nationalities.RUSSIAN} handleClick={this.handleUpdateSide2Nationalities} />
+                    Allied Nationalities:
+                    <ToggleButton label={Nationalities.AMERICAN.label} activationValue={Nationalities.AMERICAN.code} currentValue={alliedNationalities.AMERICAN} handleClick={this.handleUpdateAlliedNationalities} />
+                    <ToggleButton label={Nationalities.RUSSIAN.label} activationValue={Nationalities.RUSSIAN.code} currentValue={alliedNationalities.RUSSIAN} handleClick={this.handleUpdateAlliedNationalities} />
                 </label><br />
                 <label>
                     Setups first:
-                    <ToggleButton label="Side 1" activationValue={Sides.SIDE_1} currentValue={this.props.scenario.setsupFirst} handleClick={this.handleSetSetsupFirst} />
-                    <ToggleButton label="Side 2" activationValue={Sides.SIDE_2} currentValue={this.props.scenario.setsupFirst} handleClick={this.handleSetSetsupFirst} />
+                    <ToggleButton label={Sides.AXIS} activationValue={Sides.AXIS} currentValue={this.props.scenario.setsupFirst} handleClick={this.handleSetSetsupFirst} />
+                    <ToggleButton label={Sides.ALLIED} activationValue={Sides.ALLIED} currentValue={this.props.scenario.setsupFirst} handleClick={this.handleSetSetsupFirst} />
                 </label>
                 <label>
                     Moves first:
-                    <ToggleButton label="Side 1" activationValue={Sides.SIDE_1} currentValue={this.props.scenario.movesFirst} handleClick={this.handleSetMovesFirst} />
-                    <ToggleButton label="Side 2" activationValue={Sides.SIDE_2} currentValue={this.props.scenario.movesFirst} handleClick={this.handleSetMovesFirst} />
+                    <ToggleButton label={Sides.AXIS} activationValue={Sides.AXIS} currentValue={this.props.scenario.movesFirst} handleClick={this.handleSetMovesFirst} />
+                    <ToggleButton label={Sides.ALLIED} activationValue={Sides.ALLIED} currentValue={this.props.scenario.movesFirst} handleClick={this.handleSetMovesFirst} />
                 </label>
             </div>
         );

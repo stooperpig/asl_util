@@ -1,0 +1,23 @@
+.counter-setup-panel {
+    flex:1;
+    overflow:auto;
+    background-color:lightgray;
+    display:flex;
+    flex-direction:column;
+    justify-content: stretch;
+    text-align:left;
+    padding:10px;
+}
+
+.counter-setup-panel-hidden {
+    display:none;
+}
+
+.counter-setup-panel-button-div {
+    border-bottom:1px solid darkgray;
+    padding-bottom:10px;
+}
+
+.counter-setup-panel-placements-div {
+
+}

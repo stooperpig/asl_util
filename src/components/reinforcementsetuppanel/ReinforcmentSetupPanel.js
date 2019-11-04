@@ -5,15 +5,12 @@ import { connect } from 'react-redux';
 
 class ReinforcementSetupPanel extends React.PureComponent {
     render() { 
-        if (this.props.activePanel !== Panels.REINFORCEMENTS) {
-            return null;
-        } else {  
-            return(
-                <div className="reinforcement-setup-panel">
-                    ReinforcementSetupPanel
-                </div>
-            );
-        }
+        let panelClass = (this.props.activePanel === Panels.REINFORCEMENTS)?'reinforcement-setup-panel':'reinforcement-setup-panel-hidden';
+        return(
+            <div className={panelClass}>
+                ReinforcementSetupPanel
+            </div>
+        );
     }
 }
 

@@ -1,0 +1,29 @@
+.counter-group {
+    border:1px solid white;
+}
+
+.counter-group-instructions {
+    text-align:left;
+    width:90%;
+}
+
+.counter-group-counters {
+    display:flex;
+    flex-direction:row;
+}
+
+.counter-group-counter {
+    text-align: center;
+}
+
+.counter-group-header {
+    border-bottom:1px solid white;
+    text-align:right;
+    background:lightgray;
+}
+
+.counter-group-header-selected {
+    text-align:right;
+    background:darkgray;
+}
+

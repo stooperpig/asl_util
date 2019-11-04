@@ -19,4 +19,5 @@
 
 .setup-panel-button-div {
     text-align:left;
+    border-bottom: 2px solid darkgray;
 }

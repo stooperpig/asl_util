@@ -8,3 +8,7 @@
     flex-direction:row;
     justify-content: stretch;
 }
+
+.reinforcement-setup-panel-hidden {
+    display:none;
+}
