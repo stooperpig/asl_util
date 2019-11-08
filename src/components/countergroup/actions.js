@@ -1,7 +1,16 @@
-import { UPDATE_BORAD_DATA } from '../../constants/action-types';
+import { UPDATE_GROUP_COUNTERS } from '../../constants/action-types';
 
-export const updateInitialPlacementData = (col, row, property, value) => {
+export const updateGroupCounters = (side, groupType, groupId, counterType) => {
     return (dispatch) => {
-        dispatch({type:UPDATE_BORAD_DATA, payload:{col:col, row:row, property:property, value:value}});
+        dispatch({
+            type: UPDATE_GROUP_COUNTERS,
+            payload: {
+                actionType: 'remove',
+                side: side,
+                groupType: groupType,
+                groupId: groupId,
+                counterType: counterType
+            }
+        });
     };
 };

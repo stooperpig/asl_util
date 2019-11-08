@@ -1,7 +1,8 @@
 import React from 'react';
-import {Panels} from '../../constants/game-constants';
-import {CounterTypes, Sides, ImageMap} from '../../constants/counter-types';
+import { Panels } from '../../constants/game-constants';
+import { CounterTypes, Sides, ImageMap } from '../../constants/counter-types';
 import CounterGroup from '../countergroup/CounterGroup';
+import { updateGroupCounters } from './actions';
 import './CounterSetupPanel.css';
 import { connect } from 'react-redux';
 
@@ -12,7 +13,7 @@ class CounterSetupPanel extends React.PureComponent {
         this.handleSelectCounter = this.handleSelectCounter.bind(this);
         this.handleSelectCounterGroup = this.handleSelectCounterGroup.bind(this);
         this.state = {
-            selectedCounterGroup:-1
+            selectedCounterGroup: -1
         };
     }
 
@@ -26,10 +27,10 @@ class CounterSetupPanel extends React.PureComponent {
 
         let counterImages = [];
         nationalityCodes.forEach(nationalityCode => {
-            for(let key in CounterTypes) {
+            for (let key in CounterTypes) {
                 let counterType = CounterTypes[key];
                 if (counterType.nationality.code === nationalityCode) {
-                    counterImages.push({key:key, src:ImageMap[key].src});
+                    counterImages.push({ key: key, src: ImageMap[key].src });
                 }
             }
         });
@@ -55,35 +56,38 @@ class CounterSetupPanel extends React.PureComponent {
 
     handleSelectCounter(counterType) {
         console.log(counterType);
+        if (this.state.selectedCounterGroup >= 0) {
+            this.props.updateGroupCounters(this.props.activeSide, this.props.panelType, this.state.selectedCounterGroup, counterType);
+        }
     }
 
     handleSelectCounterGroup(id) {
         if (this.state.selectedCounterGroup === id) {
-            this.setState({...this.state, selectedCounterGroup:-1});
+            this.setState({ ...this.state, selectedCounterGroup: -1 });
         } else {
-            this.setState({...this.state, selectedCounterGroup:id});
+            this.setState({ ...this.state, selectedCounterGroup: id });
         }
     }
 
-    render() {   
-        let panelClass = (this.props.activePanel === this.props.panelType)?'counter-setup-panel':'counter-setup-panel-hidden';
+    render() {
+        let panelClass = (this.props.activePanel === this.props.panelType) ? 'counter-setup-panel' : 'counter-setup-panel-hidden';
         let counterImages = this.getCounterImages();
         let groups = this.getGroups();
-        let buttonLabel = (this.props.panelType === Panels.INITIAL_PLACEMENTS)?'Add Initial Placement':'Add Reinforcement';
+        let buttonLabel = (this.props.panelType === Panels.INITIAL_PLACEMENTS) ? 'Add Initial Placement' : 'Add Reinforcement';
 
-        return(
+        return (
             <div className={panelClass}>
                 <div className="counter-setup-panel-button-div">
                     <button>{buttonLabel}</button>
                 </div>
                 <div className="counter-setup-panel-countertype-list">
                     {counterImages.map(counterType => {
-                        return(<img key={counterType.key} src={counterType.src} onClick={() => {this.handleSelectCounter(counterType.key);}}/>);
+                        return (<img key={counterType.key} src={counterType.src} onClick={() => { this.handleSelectCounter(counterType.key); }} />);
                     })}
                 </div>
                 <div className="counter-setup-panel-placements-div">
-                    {groups.map((group,index) => {
-                        return(<CounterGroup key={index} selected={this.state.selectedCounterGroup === group.id} onSelect={this.handleSelectGroup} group={group} panelType={this.props.panelType}/>);
+                    {groups.map((group, index) => {
+                        return (<CounterGroup key={index} selected={this.state.selectedCounterGroup === group.id} onSelect={this.handleSelectCounterGroup} group={group} panelType={this.props.panelType} />);
                     })}
                 </div>
             </div>
@@ -98,6 +102,10 @@ const mapStateToProps = (state) => ({
     allied: state.scenario.allied
 });
 
-const ConnectedCounterSetupPanel = connect(mapStateToProps,null)(CounterSetupPanel);
+const mapDispatchToProps = {
+    updateGroupCounters
+};
+
+const ConnectedCounterSetupPanel = connect(mapStateToProps, mapDispatchToProps)(CounterSetupPanel);
 
 export default ConnectedCounterSetupPanel;

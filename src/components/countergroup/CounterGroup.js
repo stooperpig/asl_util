@@ -1,7 +1,8 @@
 import React from 'react';
 //import { BoardOrientation } from '../../constants/game-constants';
 //import ToggleButton from '../togglebutton/ToggleButton';
-import {ImageMap} from '../../constants/counter-types';
+import { updateGroupCounters } from './actions';
+import { ImageMap } from '../../constants/counter-types';
 import './CounterGroup.css';
 import { connect } from 'react-redux';
 import { Panels } from '../../constants/game-constants';
@@ -32,8 +33,9 @@ class CounterGroup extends React.PureComponent {
 
     }
 
-    handleRemoveCounter(key) {
-        console.log(key);
+    handleRemoveCounter(counterType) {
+        console.log(counterType);
+        this.props.updateGroupCounters(this.props.activeSide, this.props.panelType, this.props.group.id, counterType);
     }
 
     handleSelect() {
@@ -42,17 +44,17 @@ class CounterGroup extends React.PureComponent {
 
     renderPanelData() {
         if (this.props.panelType === Panels.INITIAL_PLACEMENTS) {
-            return(
+            return (
                 <div>
-                    Instructions:<br/>
+                    Instructions:<br />
                     <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateCounterGroupData} />
                 </div>
             );
-        }  else {
-            return(
+        } else {
+            return (
                 <div>
-                    Turn: <input type="text" ref={this.turn}/><br/>
-                    Instructions:<br/>
+                    Turn: <input type="text" ref={this.turn} /><br />
+                    Instructions:<br />
                     <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateCounterGroupData} />
                 </div>
             );
@@ -68,20 +70,21 @@ class CounterGroup extends React.PureComponent {
             this.turn.current.value = this.props.group.turn;
         }
 
-        let headerClass = (this.props.selected)?'counter-group-header-selected':'counter-group-header';
+        let headerClass = (this.props.selected) ? 'counter-group-header-selected' : 'counter-group-header';
 
         return (
             <div className="counter-group">
                 <div className={headerClass} onClick={this.handleSelect}>
+                    {this.props.group.id}&nbsp;
                     <button onClick={this.handleRemoveCounterGroup}>X</button>
                 </div>
                 {this.renderPanelData()}
                 <div className="counter-group-counters">
-                    {this.props.group.counters.map((counter,index) => {
+                    {this.props.group.counters.map((counter, index) => {
                         let imageSrc = ImageMap[counter.counterType].src;
-                        return(
+                        return (
                             <div key={index} className="counter-group-counter">
-                                <img src={imageSrc} onClick={() => this.handleRemoveCounter(counter.counterType)}/><br/>
+                                <img src={imageSrc} onClick={() => this.handleRemoveCounter(counter.counterType)} /><br />
                                 {counter.quantity}
                             </div>);
                     })}
@@ -91,10 +94,14 @@ class CounterGroup extends React.PureComponent {
     }
 }
 
+const mapStateToProps = (state) => ({
+    activeSide: state.activeSide
+});
+
 const mapDispatchToProps = {
-    //updateBoardData
+    updateGroupCounters
 };
 
-const ConnectedCounterGroup = connect(null, mapDispatchToProps)(CounterGroup);
+const ConnectedCounterGroup = connect(mapStateToProps, mapDispatchToProps)(CounterGroup);
 
 export default ConnectedCounterGroup;

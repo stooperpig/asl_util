@@ -5,8 +5,7 @@ const InitialState = {
     mode: AppModes.CREATE,
     activeSide: Sides.AXIS,
     activePanel: Panels.MAP,
-    nextReinforcmentId: 0,
-    nextInitialPlacmentId: 1,
+    nextGroupId: 2,
     scenario: {
         name: 'new scen',
         id: null,
@@ -17,11 +16,11 @@ const InitialState = {
             nationalityCodes: [],
             initialPlacements: [
                 {
-                    id:0,
-                    instructions:'put your shit here',
+                    id: 0,
+                    instructions: 'put your shit here',
                     counters: [
-                        {counterType:'ge548S', quantity:1},
-                        {counterType:'ge467S', quantity:2}
+                        { counterType: 'ge548S', quantity: 1 },
+                        { counterType: 'ge467S', quantity: 2 }
                     ]
                 }
             ],
@@ -32,12 +31,12 @@ const InitialState = {
             initialPlacements: [],
             reinforcements: [
                 {
-                    id:0,
-                    turn:2,
-                    instructions:'put your shit here',
+                    id: 1,
+                    turn: 2,
+                    instructions: 'put your shit here',
                     counters: [
-                        {counterType:'am747S', quantity:1},
-                        {counterType:'am337H', quantity:2}
+                        { counterType: 'am747S', quantity: 1 },
+                        { counterType: 'am337H', quantity: 2 }
                     ]
                 }
             ]
