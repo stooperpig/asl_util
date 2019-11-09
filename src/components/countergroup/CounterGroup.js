@@ -1,7 +1,7 @@
 import React from 'react';
 //import { BoardOrientation } from '../../constants/game-constants';
 //import ToggleButton from '../togglebutton/ToggleButton';
-import { updateGroupCounters } from './actions';
+import { updateGroupCounters, updateGroupData } from './actions';
 import { ImageMap } from '../../constants/counter-types';
 import './CounterGroup.css';
 import { connect } from 'react-redux';
@@ -12,8 +12,8 @@ class CounterGroup extends React.PureComponent {
         super(props);
         this.instructions = React.createRef();
         this.turn = React.createRef();
-        this.handleUpdateCounterGroupData = this.handleUpdateCounterGroupData.bind(this);
-        this.handleRemoveCounterGroup = this.handleRemoveCounterGroup.bind(this);
+        this.handleUpdateGroupData = this.handleUpdateGroupData.bind(this);
+        this.handleRemoveGroup = this.handleRemoveGroup.bind(this);
         this.handleRemoveCounter = this.handleRemoveCounter.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
     }
@@ -25,12 +25,21 @@ class CounterGroup extends React.PureComponent {
         }
     }
 
-    handleUpdateCounterGroupData(event) {
-
+    handleUpdateGroupData(event) {
+        debugger;
+        switch(event.target.name) {
+            case 'turn':
+                this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'turn', this.turn.current.value);
+                break;
+            case 'instructions':
+                this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'instructions', this.instructions.current.value);
+                break;
+            default:
+        }
     }
 
-    handleRemoveCounterGroup() {
-
+    handleRemoveGroup() {
+        this.props.onRemove(this.props.group.id);
     }
 
     handleRemoveCounter(counterType) {
@@ -47,15 +56,15 @@ class CounterGroup extends React.PureComponent {
             return (
                 <div>
                     Instructions:<br />
-                    <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateCounterGroupData} />
+                    <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateGroupData} />
                 </div>
             );
         } else {
             return (
                 <div>
-                    Turn: <input type="text" ref={this.turn} /><br />
+                    Turn: <input type="text" ref={this.turn} onBlur={this.handleUpdateCounterGroupData} /><br />
                     Instructions:<br />
-                    <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateCounterGroupData} />
+                    <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateGroupData} />
                 </div>
             );
         }
@@ -70,13 +79,13 @@ class CounterGroup extends React.PureComponent {
             this.turn.current.value = this.props.group.turn;
         }
 
-        let headerClass = (this.props.selected) ? 'counter-group-header-selected' : 'counter-group-header';
+        let headerIdClass = (this.props.selected) ? 'counter-group-header-id-selected' : 'counter-group-header-id';
 
         return (
             <div className="counter-group">
-                <div className={headerClass} onClick={this.handleSelect}>
-                    {this.props.group.id}&nbsp;
-                    <button onClick={this.handleRemoveCounterGroup}>X</button>
+                <div className="counter-group-header">
+                    <div className={headerIdClass} onClick={this.handleSelect}>ID: {this.props.group.id}&nbsp;</div>
+                    <div><button onClick={this.handleRemoveGroup}>X</button></div>
                 </div>
                 {this.renderPanelData()}
                 <div className="counter-group-counters">
@@ -99,7 +108,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-    updateGroupCounters
+    updateGroupCounters,
+    updateGroupData
 };
 
 const ConnectedCounterGroup = connect(mapStateToProps, mapDispatchToProps)(CounterGroup);

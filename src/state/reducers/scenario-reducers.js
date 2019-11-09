@@ -93,20 +93,18 @@ export const updateBoardData = (state, payload) => {
     return { ...state, scenario: scenario };
 };
 
-export const updateInitialPlacementData = (state, payload) => {
-    let { id, property, value } = payload;
-    return { ...state };
-};
+export const updateGroupData = (state, payload) => {
+    let { side, groupType, groupId, property, value } = payload;
 
-export const updateReinforcementData = (state, payload) => {
-    let { id, property, value } = payload;
+    let group = getGroupForUpdate(state, side, groupType, groupId);
+
+    group[property] = value;
+
     return { ...state };
 };
 
 export const updateGroupCounters = (state, payload) => {
     let { actionType, side, groupType, groupId, counterType } = payload;
-
-    debugger;
 
     let group = getGroupForUpdate(state, side, groupType, groupId);
 
@@ -141,6 +139,48 @@ export const updateGroupCounters = (state, payload) => {
     }
 
     return { ...state };
+};
+
+export const updateGroups = (state, payload) => {
+    let {actionType, side, groupType, groupId} = payload;
+
+    let scenario = { ...state.scenario };
+    state.scenario = scenario;
+
+    let selectedSide;
+    if (side === Sides.AXIS) {
+        selectedSide = { ...scenario.axis };
+        scenario.axis = selectedSide;
+    } else {
+        selectedSide = { ...scenario.allied };
+        scenario.allied = selectedSide;
+    }
+
+    let groupProperty = (groupType === Panels.REINFORCEMENTS) ? 'reinforcements' : 'initialPlacements';
+
+    if (actionType === 'add') {
+        let newGroup = {
+            id: state.nextGroupId,
+            instructions:'',
+            counters:[]
+        };
+
+        ++state.nextGroupId;
+
+        if (groupType === Panels.REINFORCEMENTS) {
+            newGroup.turn = 0;
+        }
+
+        selectedSide[groupProperty] = [...selectedSide[groupProperty], newGroup];
+    } else {
+        let index = selectedSide[groupProperty].findIndex(element => element.id === groupId);
+        if (index > -1) {
+            selectedSide[groupProperty] = [...selectedSide[groupProperty]];
+            selectedSide[groupProperty].splice(index, 1);
+        }
+    }
+
+    return {...state};
 };
 
 const getGroupForUpdate = (state, side, groupType, groupId) => {

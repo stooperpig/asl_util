@@ -1,12 +1,12 @@
 import {
     CREATE_SCENARIO, EDIT_SCENARIO, DELETE_SCENARIO, SAVE_SCENARIO, SET_ACTIVE_PANEL, SET_ACTIVE_SIDE, UPDATE_GENERAL_SCENARIO_DATA,
-    UPDATE_SIDE_NATIONALITIES, UPDATE_MAP_GRID, UPDATE_BORAD_DATA, UPDATE_MAP_DATA, UPDATE_INITIAL_PLACEMENT_DATA, UPDATE_REINFORCEMENT_DATA,
+    UPDATE_SIDE_NATIONALITIES, UPDATE_MAP_GRID, UPDATE_BORAD_DATA, UPDATE_MAP_DATA, UPDATE_GROUP_DATA, UPDATE_GROUPS,
     UPDATE_GROUP_COUNTERS
 } from '../../constants/action-types';
 import InitialState from './initial-state';
 import {
     createScenario, editScenario, deleteScenario, saveScenario, setActivePanel, setActiveSide, updateGeneralScenarioData,
-    updateSideNationalities, updateMapGrid, updateBoardData, updateMapData, updateInitialPlacementData, updateReinforcementData, updateGroupCounters
+    updateSideNationalities, updateMapGrid, updateBoardData, updateMapData, updateGroupData, updateGroups, updateGroupCounters
 } from './scenario-reducers';
 
 
@@ -34,10 +34,10 @@ const rootReducer = (state = InitialState, action) => {
             return updateBoardData(state, action.payload);
         case UPDATE_MAP_DATA:
             return updateMapData(state, action.payload);
-        case UPDATE_INITIAL_PLACEMENT_DATA:
-            return updateInitialPlacementData(state, action.payload);
-        case UPDATE_REINFORCEMENT_DATA:
-            return updateReinforcementData(state, action.payload);
+        case UPDATE_GROUP_DATA:
+            return updateGroupData(state, action.payload);
+        case UPDATE_GROUPS:
+            return updateGroups(state, action.payload);
         case UPDATE_GROUP_COUNTERS:
             return updateGroupCounters(state, action.payload);
         default:

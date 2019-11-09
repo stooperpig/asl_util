@@ -1,5 +1,6 @@
 .counter-group {
-    border:1px solid white;
+    border:1px solid black;
+    margin-bottom:10px;
 }
 
 .counter-group-instructions {
@@ -19,11 +20,23 @@
 .counter-group-header {
     border-bottom:1px solid white;
     text-align:right;
-    background:lightgray;
+
+    display:flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
 }
 
-.counter-group-header-selected {
-    text-align:right;
+.counter-group-header-id {
+    flex-grow: 1;
+    background:lightgray;
+    text-align: left;
+}
+
+.counter-group-header-id-selected {
+    flex-grow: 1;
     background:darkgray;
+    text-align: left;
 }
 

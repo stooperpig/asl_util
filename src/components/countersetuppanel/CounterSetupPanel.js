@@ -2,9 +2,10 @@ import React from 'react';
 import { Panels } from '../../constants/game-constants';
 import { CounterTypes, Sides, ImageMap } from '../../constants/counter-types';
 import CounterGroup from '../countergroup/CounterGroup';
-import { updateGroupCounters } from './actions';
+import { updateGroupCounters, updateGroups } from './actions';
 import './CounterSetupPanel.css';
 import { connect } from 'react-redux';
+import { timingSafeEqual } from 'crypto';
 
 class CounterSetupPanel extends React.PureComponent {
     constructor(props) {
@@ -12,8 +13,17 @@ class CounterSetupPanel extends React.PureComponent {
 
         this.handleSelectCounter = this.handleSelectCounter.bind(this);
         this.handleSelectCounterGroup = this.handleSelectCounterGroup.bind(this);
+        this.handleAddGroup = this.handleAddGroup.bind(this);
+        this.handleRemoveGroup = this.handleRemoveGroup.bind(this);
+        this.selectedCounterGroup = {};
+        this.selectedCounterGroup[Sides.AXIS] = {};
+        this.selectedCounterGroup[Sides.AXIS][Panels.REINFORCEMENTS] = -1;
+        this.selectedCounterGroup[Sides.AXIS][Panels.INITIAL_PLACEMENTS] = -1;
+        this.selectedCounterGroup[Sides.ALLIED] = {};
+        this.selectedCounterGroup[Sides.ALLIED][Panels.REINFORCEMENTS] = -1;
+        this.selectedCounterGroup[Sides.ALLIED][Panels.INITIAL_PLACEMENTS] = -1;
         this.state = {
-            selectedCounterGroup: -1
+            toggle: false
         };
     }
 
@@ -54,18 +64,48 @@ class CounterSetupPanel extends React.PureComponent {
         }
     }
 
+    getSelectedCounterGroup() {
+        return this.selectedCounterGroup[this.props.activeSide][this.props.panelType];
+    }
+
+    setSelectedCounterGroup(value) {
+        this.selectedCounterGroup[this.props.activeSide][this.props.panelType] = value;
+    }
+
     handleSelectCounter(counterType) {
         console.log(counterType);
-        if (this.state.selectedCounterGroup >= 0) {
-            this.props.updateGroupCounters(this.props.activeSide, this.props.panelType, this.state.selectedCounterGroup, counterType);
+        let selectedCounterGroup = this.getSelectedCounterGroup();
+        if (selectedCounterGroup > -1) {
+            this.props.updateGroupCounters(this.props.activeSide, this.props.panelType, selectedCounterGroup, counterType);
         }
     }
 
     handleSelectCounterGroup(id) {
-        if (this.state.selectedCounterGroup === id) {
-            this.setState({ ...this.state, selectedCounterGroup: -1 });
-        } else {
-            this.setState({ ...this.state, selectedCounterGroup: id });
+        let selectedCounterGroup = this.getSelectedCounterGroup();
+        if (selectedCounterGroup !== id) {
+            this.setSelectedCounterGroup(id);
+            this.setState({ ...this.state, toggle: !this.state.toggle });
+        }
+    }
+
+    handleAddGroup() {
+        this.props.updateGroups('add', this.props.activeSide, this.props.panelType);
+    }
+
+
+    handleRemoveGroup(id) {
+        let selectedCounterGroup = this.getSelectedCounterGroup();
+        if (selectedCounterGroup === id) {
+            this.setSelectedCounterGroup(-1);
+        }
+
+        this.props.updateGroups('remove', this.props.activeSide, this.props.panelType, id);
+    }
+
+    updateSelectedCounterGroup(groups) {
+        let selectedCounterGroup = this.getSelectedCounterGroup();
+        if (selectedCounterGroup === -1 && groups.length > 0) {
+            this.setSelectedCounterGroup(groups[0].id);
         }
     }
 
@@ -73,12 +113,13 @@ class CounterSetupPanel extends React.PureComponent {
         let panelClass = (this.props.activePanel === this.props.panelType) ? 'counter-setup-panel' : 'counter-setup-panel-hidden';
         let counterImages = this.getCounterImages();
         let groups = this.getGroups();
+        this.updateSelectedCounterGroup(groups);
         let buttonLabel = (this.props.panelType === Panels.INITIAL_PLACEMENTS) ? 'Add Initial Placement' : 'Add Reinforcement';
 
         return (
             <div className={panelClass}>
                 <div className="counter-setup-panel-button-div">
-                    <button>{buttonLabel}</button>
+                    <button onClick={this.handleAddGroup}>{buttonLabel}</button>
                 </div>
                 <div className="counter-setup-panel-countertype-list">
                     {counterImages.map(counterType => {
@@ -87,7 +128,8 @@ class CounterSetupPanel extends React.PureComponent {
                 </div>
                 <div className="counter-setup-panel-placements-div">
                     {groups.map((group, index) => {
-                        return (<CounterGroup key={index} selected={this.state.selectedCounterGroup === group.id} onSelect={this.handleSelectCounterGroup} group={group} panelType={this.props.panelType} />);
+                        return (<CounterGroup key={index} selected={this.getSelectedCounterGroup() === group.id} onSelect={this.handleSelectCounterGroup}
+                            onRemove={this.handleRemoveGroup} group={group} panelType={this.props.panelType} />);
                     })}
                 </div>
             </div>
@@ -103,7 +145,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-    updateGroupCounters
+    updateGroupCounters,
+    updateGroups
 };
 
 const ConnectedCounterSetupPanel = connect(mapStateToProps, mapDispatchToProps)(CounterSetupPanel);
