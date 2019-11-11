@@ -78,14 +78,21 @@ class GeneralDataPanel extends React.PureComponent {
     }
 
     render() {
-        console.log('render generaldata panel')
+        console.log('render generaldata panel');
+
+        if (this.scenarioId.current != null) {
+            this.scenarioName.current.value = this.props.scenario.name;
+            this.scenarioId.current.value = this.props.scenario.id;
+            this.numberOfTurns.current.value = this.props.scenario.numberOfTurns;
+        }
+
         let axisNationalities = this.buildNationalityFlags(this.props.scenario.axis.nationalityCodes);
         let alliedNationalities = this.buildNationalityFlags(this.props.scenario.allied.nationalityCodes);
 
         return (
             <div className="general-data-panel">
-                <label>Scenario Name: <input type="text" name="scenarioName" ref={this.scenarioName} onBlur={this.handleUpdateScenarioData} /></label>
                 <label>Scenario Id: <input type="text" name="scenarioId" ref={this.scenarioId} onBlur={this.handleUpdateScenarioData} /></label><br />
+                <label>Scenario Name: <input type="text" name="scenarioName" ref={this.scenarioName} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>Number of Turns: <input type="text" name="numberOfTurns" ref={this.numberOfTurns} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>
                     Axis Nationalities:

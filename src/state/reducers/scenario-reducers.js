@@ -8,7 +8,20 @@ export const createScenario = (state, payload) => {
 };
 
 export const editScenario = (state, payload) => {
-    return { ...state, mode: AppModes.EDIT };
+    const getMaxGroup = (accumulator, group) => {
+        if (group.id > accumulator) {
+            return group.id;
+        } else {
+            return accumulator;
+        }
+    };
+
+    let maxGroupId = payload.axis.initialPlacements.reduce(getMaxGroup, -1);
+    maxGroupId = payload.axis.reinforcements.reduce(getMaxGroup, maxGroupId);
+    maxGroupId = payload.allied.initialPlacements.reduce(getMaxGroup, maxGroupId);
+    maxGroupId = payload.allied.reinforcements.reduce(getMaxGroup, maxGroupId);
+
+    return { ...state, mode: AppModes.EDIT, scenario: payload, nextGroupId: maxGroupId + 1 };
 };
 
 export const deleteScenario = (state, payload) => {
@@ -142,7 +155,7 @@ export const updateGroupCounters = (state, payload) => {
 };
 
 export const updateGroups = (state, payload) => {
-    let {actionType, side, groupType, groupId} = payload;
+    let { actionType, side, groupType, groupId } = payload;
 
     let scenario = { ...state.scenario };
     state.scenario = scenario;
@@ -161,8 +174,8 @@ export const updateGroups = (state, payload) => {
     if (actionType === 'add') {
         let newGroup = {
             id: state.nextGroupId,
-            instructions:'',
-            counters:[]
+            instructions: '',
+            counters: []
         };
 
         ++state.nextGroupId;
@@ -180,7 +193,7 @@ export const updateGroups = (state, payload) => {
         }
     }
 
-    return {...state};
+    return { ...state };
 };
 
 const getGroupForUpdate = (state, side, groupType, groupId) => {
