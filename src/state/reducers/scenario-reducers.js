@@ -61,22 +61,22 @@ export const updateSideNationalities = (state, payload) => {
 };
 
 export const updateMapGrid = (state, payload) => {
-    let { cols, rows } = payload;
+    let { boardCols, boardRows } = payload;
 
     let scenario = { ...state.scenario };
     let map = { ...scenario.map };
     scenario.map = map;
-    map.cols = cols;
-    map.rows = rows;
+    map.boardCols = boardCols;
+    map.boardRows = boardRows;
     map.boards = [];
-    for (let i = 0; i < rows; ++i) {
+    for (let i = 0; i < boardRows; ++i) {
         map.boards[i] = [];
-        for (let j = 0; j < cols; ++j) {
+        for (let j = 0; j < boardCols; ++j) {
             map.boards[i].push({
-                id: null,
+                id: '',
                 orientation: BoardOrientation.NORMAL,
-                cropTopLeft: null,
-                cropBottomRight: null
+                cropLeftCol: 'A',
+                cropRightCol: 'GG'
             });
         }
     }

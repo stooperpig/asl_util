@@ -9,16 +9,16 @@ class Board extends React.PureComponent {
     constructor(props) {
         super(props);
         this.id = React.createRef();
-        this.cropTopLeft = React.createRef();
-        this.cropBottomRight = React.createRef();
+        this.cropLeftCol = React.createRef();
+        this.cropRightCol = React.createRef();
         this.handleUpdateBoardData = this.handleUpdateBoardData.bind(this);
         this.handleUpdateBoardOrientation = this.handleUpdateBoardOrientation.bind(this);
     }
 
     componentDidMount() {
         this.id.current.value = this.props.boardData.id;
-        this.cropTopLeft.current.value = this.props.boardData.cropTopLeft;
-        this.cropBottomRight.current.value = this.props.boardData.cropBottomRight;
+        this.cropLeftCol.current.value = this.props.boardData.cropLeftCol;
+        this.cropRightCol.current.value = this.props.boardData.cropRightCol;
     }
 
     handleUpdateBoardOrientation(value) {
@@ -30,22 +30,35 @@ class Board extends React.PureComponent {
             case 'id':
                 this.props.updateBoardData(this.props.col, this.props.row, 'id', this.id.current.value);
                 break;
-            case 'cropTopLeft':
-                this.props.updateBoardData(this.props.col, this.props.row, 'cropTopLeft', this.cropTopLeft.current.value);
+            case 'cropLeftCol':
+                this.props.updateBoardData(this.props.col, this.props.row, 'cropLeftCol', this.cropLeftCol.current.value.toUpperCase());
                 break;
-            case 'cropBottomRight':
-                this.props.updateBoardData(this.props.col, this.props.row, 'cropBottomRight', this.cropBottomRight.current.value);
+            case 'cropRightCol':
+                this.props.updateBoardData(this.props.col, this.props.row, 'cropRightCol', this.cropRightCol.current.value.toUpperCase());
                 break;
             default:
                 break;
         }
     }
 
+    calculateColumnNumber(columnLetter) {
+        const unicodeOfA = 65; 
+        let columnNumber = columnLetter.charCodeAt(0) - unicodeOfA;
+        if (columnLetter.length > 1) {
+            columnNumber += 26;
+        }
+
+        return columnNumber;
+    }
+
     render() {
+        let leftColNumber = -2;
         if (this.id.current) {
             this.id.current.value = this.props.boardData.id;
-            this.cropTopLeft.current.value = this.props.boardData.cropTopLeft;
-            this.cropBottomRight.current.value = this.props.boardData.cropBottomRight;
+            this.cropLeftCol.current.value = this.props.boardData.cropLeftCol;
+            this.cropRightCol.current.value = this.props.boardData.cropRightCol;
+
+            leftColNumber = this.calculateColumnNumber(this.cropLeftCol.current.value);
         }
 
         return (
@@ -56,8 +69,9 @@ class Board extends React.PureComponent {
                     handleClick={this.handleUpdateBoardOrientation} />
                 <ToggleButton label={BoardOrientation.FLIPPED} activationValue={BoardOrientation.FLIPPED} currentValue={this.props.boardData.orientation}
                     handleClick={this.handleUpdateBoardOrientation} /><br />
-                Crop TopLeft: <input type="text" name="cropTopLeft" ref={this.cropTopLeft} onBlur={this.handleUpdateBoardData} />
-                Crop BottomRight: <input type="text" name="cropBottomRight" ref={this.cropBottomRight} onBlur={this.handleUpdateBoardData} />
+                Crop - LeftCol: <input type="text" name="cropLeftCol" ref={this.cropLeftCol} onBlur={this.handleUpdateBoardData} />
+                Crop - RightCol: <input type="text" name="cropRightCol" ref={this.cropRightCol} onBlur={this.handleUpdateBoardData} /><br/>
+                {leftColNumber}
             </div>
         );
     }

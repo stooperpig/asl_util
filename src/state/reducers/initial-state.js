@@ -1,5 +1,5 @@
 import { AppModes, Panels } from '../../constants/game-constants';
-import { Sides } from '../../constants/counter-types';
+import { Sides, Nationalities } from '../../constants/counter-types';
 
 const InitialState = {
     mode: AppModes.CREATE,
@@ -7,13 +7,13 @@ const InitialState = {
     activePanel: Panels.MAP,
     nextGroupId: 2,
     scenario: {
-        name: 'new scen',
-        id: null,
+        name: 'First Scenario',
+        id: 's1',
         numberOfTurns: 0,
-        setsupFirst: null,
-        movesFirst: null,
+        setsupFirst: Sides.ALLIED,
+        movesFirst: Sides.AXIS,
         axis: {
-            nationalityCodes: [],
+            nationalityCodes: [Nationalities.GERMAN.code],
             initialPlacements: [
                 {
                     id: 0,
@@ -27,7 +27,7 @@ const InitialState = {
             reinforcements: []
         },
         allied: {
-            nationalityCodes: [],
+            nationalityCodes: [Nationalities.AMERICAN.code],
             initialPlacements: [],
             reinforcements: [
                 {
@@ -42,15 +42,15 @@ const InitialState = {
             ]
         },
         map: {
-            cols: 1,
-            rows: 1,
+            boardCols: 1,
+            boardRows: 1,
             north: 1,
             boards: [[
                 {
-                    id: 'zz',
+                    id: 'bdy',
                     orientation: 'normal',
-                    cropTopLeft: 'xx',
-                    cropBottomRight: 'yy'
+                    cropLeftCol: 'A',
+                    cropRightCol: 'V'
                 }
             ]]
         },

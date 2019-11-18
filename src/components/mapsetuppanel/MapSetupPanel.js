@@ -16,8 +16,8 @@ class MapSetupPanel extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.cols.current.value = this.props.map.cols;
-        this.rows.current.value = this.props.map.rows;
+        this.cols.current.value = this.props.map.boardCols;
+        this.rows.current.value = this.props.map.boardRows;
         this.north.current.value = this.props.map.north;
     }
 
@@ -30,6 +30,13 @@ class MapSetupPanel extends React.PureComponent {
     }
 
     render() {
+
+        if (this.cols.current) {
+            this.cols.current.value = this.props.map.boardCols;
+            this.rows.current.value = this.props.map.boardRows;
+            this.north.current.value = this.props.map.north;
+        }
+
         let panelClass = (this.props.activePanel === Panels.MAP) ? 'map-setup-panel' : 'map-setup-panel-hidden';
         return (
             <div className={panelClass}>

@@ -20,7 +20,7 @@ class Menu extends React.PureComponent {
     }
 
     handleEdit() {
-        this.props.editScenario('s2');
+        this.props.editScenario('s1');
     }
 
     handleDelete() {

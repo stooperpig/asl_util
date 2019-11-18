@@ -1,8 +1,8 @@
 import { UPDATE_MAP_GRID, UPDATE_MAP_DATA } from "../../constants/action-types";
 
-export const updateMapGrid = (cols, rows) => {
+export const updateMapGrid = (boardCols, boardRows) => {
     return (dispatch, getState) => {
-        dispatch({type:UPDATE_MAP_GRID, payload:{cols:cols, rows:rows}});
+        dispatch({type:UPDATE_MAP_GRID, payload:{boardCols:boardCols, boardRows:boardRows}});
 
     };
 };

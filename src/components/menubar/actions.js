@@ -1,6 +1,6 @@
 import { CREATE_SCENARIO, EDIT_SCENARIO } from '../../constants/action-types';
 import { CounterTypes, ImageMap } from '../../constants/counter-types';
-import { DefaultBoardProperties } from '../../constants/game-constants';
+import { DefaultBoardProperties, DefaultImageMap } from '../../constants/game-constants';
 import axios from 'axios';
 
 export const createScenario = () => {
@@ -12,7 +12,7 @@ export const createScenario = () => {
 
 export const editScenario = (scenarioId) => {
     return (dispatch) => {
-        axios.get(`/scenarios/scenario-${scenarioId}-new.json`)
+        axios.get(`/scenarios/scenario-${scenarioId}.json`)
             .then(res => {
                 dispatch({ type: EDIT_SCENARIO, payload: res.data });
             });
@@ -53,8 +53,6 @@ export const saveScenario = () => {
             return group.counters.reduce(reduceCounter, accumulator);
         }
 
-        debugger;
-
         let counterTypeList = scenario.axis.initialPlacements.reduce(reduceGroup, []);
         counterTypeList = scenario.axis.reinforcements.reduce(reduceGroup, counterTypeList);
         counterTypeList = scenario.allied.initialPlacements.reduce(reduceGroup, counterTypeList);
@@ -78,9 +76,10 @@ export const saveScenario = () => {
 
         counterTypeList = counterTypeList.reduce(reduceCounterType, counterTypeList);
 
-        scenario.imageMap = {};
+        scenario.imageMap = { ...DefaultImageMap };
+        addMapImages(scenario);
         counterTypeList.forEach(counterType => {
-            scenario.imageMap[counterType] = ImageMap[counterType];
+            scenario.imageMap[counterType] = {src: ImageMap[counterType].src};
         });
 
         setMapProperties(scenario);
@@ -97,14 +96,20 @@ export const saveScenario = () => {
     };
 };
 
+const addMapImages = (scenario) => {
+    let map = scenario.map;
+    for (let i = 0; i < map.boards.length; ++i) {
+        for (let j = 0; j < map.boards[i].length; ++j) {
+            let board = map.boards[i][j];
+            scenario.imageMap[board.id] = { src: `/images/maps/${board.id}.gif` };
+        }
+    }
+};
+
 const setMapProperties = (scenario) => {
     let map = scenario.map;
     map.losDataName = `losData-${scenario.id}.los`;
     map.hexDataName = `hexData-${scenario.id}.json`;
-    //"id": "mainMap",
-    //"unCroppedWidth": 1800,
-    //"width": 1180,
-    //"height": 645,
     map.hexProperties = {
         dx: DefaultBoardProperties.dx,
         dy: DefaultBoardProperties.dy,
@@ -119,9 +124,63 @@ const setMapProperties = (scenario) => {
         leftMargin: DefaultBoardProperties.leftMargin
     };
 
+    map.boardRows = map.boards.length;
+    map.boardCols = map.boards[0].length;
+
+    let colOffset = 0;
+    let trimCols = 0;
+    let trimPixels = 0;
+    for (let i = 0; i < map.boards.length; ++i) {
+        for (let j = 0; j < map.boards[i].length; ++j) {
+            let board = map.boards[i][j];
+
+            let leftCol = calculateColumnNumber(board.cropLeftCol);
+            let rightCol = calculateColumnNumber(board.cropRightCol);
+
+            let trimLeftPixels = leftCol * map.hexProperties.hexWidth;
+            let trimRightPixels = (DefaultBoardProperties.cols - rightCol - 1) * map.hexProperties.hexWidth;
+
+            board.x = trimLeftPixels;
+            board.y = 0;
+
+            if (rightCol < DefaultBoardProperties.cols - 1) {
+                board.width = DefaultBoardProperties.width - board.x - trimRightPixels;
+            } else {
+                board.width = DefaultBoardProperties.width - board.x;
+            }
+
+            board.height = DefaultBoardProperties.height - board.y;
+
+            if (i === 0 && j === 0) {
+                colOffset = leftCol;
+                trimCols = leftCol;
+                trimPixels = trimLeftPixels;
+            }
+
+            if (i === 0 && j === map.boardCols - 1) {
+                trimCols += DefaultBoardProperties.cols - rightCol - 1;
+                trimPixels += trimRightPixels;
+            }
+        }
+    }
+
     // need to calculate the height and width based on board layout and crops
-    
+    map.height = DefaultBoardProperties.height * map.boardRows;
+    map.width = (DefaultBoardProperties.width * map.boardCols) - trimPixels;
+
     // need to calculate the rows and cols based on board layout and crops
-    map.rows = 10;
-    map.cols = 22;
+    map.rows = DefaultBoardProperties.rows * map.boardRows;
+    map.cols = (DefaultBoardProperties.cols * map.boardCols) - trimCols;
+    map.colOffset = colOffset;
+}
+
+
+const calculateColumnNumber = (columnLetter) => {
+    const unicodeOfA = 65; 
+    let columnNumber = columnLetter.charCodeAt(0) - unicodeOfA;
+    if (columnLetter.length > 1) {
+        columnNumber += 26;
+    }
+
+    return columnNumber;
 }
