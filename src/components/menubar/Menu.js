@@ -1,7 +1,7 @@
 import React from 'react';
 import './Menu.css';
 import DropdownMenu from './DropdownMenu';
-import { createScenario, editScenario, deleteScenario, saveScenario } from './actions';
+import { createScenario, editScenario, deleteScenario, saveScenario, saveGame } from './actions';
 import { connect } from 'react-redux';
 
 
@@ -13,6 +13,7 @@ class Menu extends React.PureComponent {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleSaveGame = this.handleSaveGame.bind(this);
     }
 
     handleCreate() {
@@ -31,14 +32,22 @@ class Menu extends React.PureComponent {
         this.props.saveScenario();
     }
 
+    handleSaveGame() {
+        this.props.saveGame();
+    }
+
     render() {
         let scenarioMenu = {
             title: 'Scenario', subItems: [{ title: 'Create', handler: this.handleCreate }, { title: 'Edit', handler: this.handleEdit }, { title: 'Delete', handler: this.handleDelete },
                 { title: 'Save', handler: this.handleSave }]
         };
+        let gameMenu = {
+            title: 'Game', subItems: [{ title: 'Save', handler: this.handleSaveGame }]
+        };
         return (
             <div className="menu">
                 <DropdownMenu menuItem={scenarioMenu} />
+                <DropdownMenu menuItem={gameMenu} />
             </div>
         );
     }
@@ -48,7 +57,8 @@ const mapDispatchToProps = {
     createScenario,
     editScenario,
     deleteScenario,
-    saveScenario
+    saveScenario,
+    saveGame
 };
 
 const ConnectedMenu = connect(null, mapDispatchToProps)(Menu);

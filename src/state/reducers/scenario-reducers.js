@@ -175,6 +175,7 @@ export const updateGroups = (state, payload) => {
         let newGroup = {
             id: state.nextGroupId,
             instructions: '',
+            elr:5,
             counters: []
         };
 

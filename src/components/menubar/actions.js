@@ -79,7 +79,7 @@ export const saveScenario = () => {
         scenario.imageMap = { ...DefaultImageMap };
         addMapImages(scenario);
         counterTypeList.forEach(counterType => {
-            scenario.imageMap[counterType] = {src: ImageMap[counterType].src};
+            scenario.imageMap[counterType] = { src: ImageMap[counterType].src };
         });
 
         setMapProperties(scenario);
@@ -172,11 +172,12 @@ const setMapProperties = (scenario) => {
     map.rows = DefaultBoardProperties.rows * map.boardRows;
     map.cols = (DefaultBoardProperties.cols * map.boardCols) - trimCols;
     map.colOffset = colOffset;
+    map.isFirstColumnEven = (colOffset % 2 === 0);
 }
 
 
 const calculateColumnNumber = (columnLetter) => {
-    const unicodeOfA = 65; 
+    const unicodeOfA = 65;
     let columnNumber = columnLetter.charCodeAt(0) - unicodeOfA;
     if (columnLetter.length > 1) {
         columnNumber += 26;
@@ -184,3 +185,133 @@ const calculateColumnNumber = (columnLetter) => {
 
     return columnNumber;
 }
+
+export const saveGame = () => {
+    return (dispatch, getState) => {
+        let state = getState();
+        let scenario = { ...state.scenario };
+        let game = {
+            commState: "READY",
+            gameId: 100,
+            losMode: false,
+            firstSetUpPlayer: 1,
+            startingPlayer: 0,
+            attackingPlayer: 0,
+            defendingPlayer: 1,
+            currentPlayer: 0,
+            phasingPlayer: 1,
+            players: [
+                {
+                    id: 0,
+                    name: "Bill",
+                    side: "axis",
+                    nationality: "ge"
+                },
+                {
+                    id: 1,
+                    name: "MJ",
+                    side: "allied",
+                    nationality: "am"
+                }
+            ],
+            currentTurn: 1,
+            message: null,
+            displayCounters: true,
+            targetGroups: null,
+            fireGroups: null,
+            targetHex: null,
+            scenarioName: "scenario-s1.json"
+        };
+
+        if (scenario.axis.initialPlacements.length > 0 || scenario.allied.initialPlacements.length > 0) {
+            game.gameMode = "PREPARE_INITIAL_PLACEMENT";
+            game.currentPhase = "InitialPlacement";
+        } else {
+            game.gameMode = "NORMAL";
+            game.currentPhase = "Rally";
+        }
+
+        game.counters = {};
+        game.counterGroups = {};
+        game.stacks = {};
+
+        let nextCounterId = addCounterGroupsAndCountersToGame(scenario, game, 'axis', 0);
+        nextCounterId = addCounterGroupsAndCountersToGame(scenario, game, 'allied', nextCounterId);
+
+        game.nextCounterId = nextCounterId;
+
+        axios.post('/createGame', game)
+            .then(function (res) {
+                console.log(res.data);
+            })
+            .catch(function (err) {
+                console.log(err.data);
+            });
+    };
+}
+
+const addCounterGroupsAndCountersToGame = (scenario, game, side, nextCounterId) => {
+    let initialPlacements = scenario[side].initialPlacements;
+    initialPlacements.forEach(initialPlacement => {
+        let counterGroup = {
+            id: initialPlacement.id,
+            counters: []
+        };
+
+        game.counterGroups[counterGroup.id] = counterGroup;
+        initialPlacement.counters.forEach(counterData => {
+            let typeData = {
+                counterType: counterData.counterType,
+                quantity: counterData.quantity,
+                counterIds: []
+            }
+
+            counterGroup.counters.push(typeData);
+            for(let i = 0; i < counterData.quantity; ++i) {
+                let counter = {
+                    id: nextCounterId,
+                    counterType: typeData.counterType,
+                    nationality: scenario.counterTypes[typeData.counterType].nationality.code,
+                    elr: initialPlacement.elr,
+                    selected: false
+                };
+                typeData.counterIds.push(counter.id);
+                game.counters[counter.id] = counter;
+                ++nextCounterId;
+            }
+        });
+    });
+
+    let reinforcements = scenario[side].reinforcements;
+    reinforcements.forEach(reinforcement => {
+        let counterGroup = {
+            id: reinforcement.id,
+            counters: []
+        };
+
+        game.counterGroups[counterGroup.id] = counterGroup;
+        reinforcement.counters.forEach(counterData => {
+            let typeData = {
+                counterType: counterData.counterType,
+                quantity: counterData.quantity,
+                counterIds: []
+            }
+
+            counterGroup.counters.push(typeData);
+            for(let i = 0; i < counterData.quantity; ++i) {
+                let counter = {
+                    id: nextCounterId,
+                    counterType: typeData.counterType,
+                    nationality: scenario.counterTypes[typeData.counterType].nationality.code,
+                    elr: reinforcement.elr,
+                    selected: false
+                };
+                typeData.counterIds.push(counter.id);
+                game.counters[counter.id] = counter;
+                ++nextCounterId;
+            }
+        });
+    });
+
+    return nextCounterId;
+};

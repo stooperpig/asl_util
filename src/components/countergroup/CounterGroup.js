@@ -12,6 +12,7 @@ class CounterGroup extends React.PureComponent {
         super(props);
         this.instructions = React.createRef();
         this.turn = React.createRef();
+        this.elr = React.createRef();
         this.handleUpdateGroupData = this.handleUpdateGroupData.bind(this);
         this.handleRemoveGroup = this.handleRemoveGroup.bind(this);
         this.handleRemoveCounter = this.handleRemoveCounter.bind(this);
@@ -20,16 +21,19 @@ class CounterGroup extends React.PureComponent {
 
     componentDidMount() {
         this.instructions.current.value = this.props.group.instructions;
+        this.elr.current.value = this.props.group.elr;
         if (this.turn.current) {
             this.turn.current.value = this.props.group.turn;
         }
     }
 
     handleUpdateGroupData(event) {
-        debugger;
         switch(event.target.name) {
+            case 'elr':
+                this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'elr', parseInt(this.elr.current.value));
+                break;
             case 'turn':
-                this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'turn', this.turn.current.value);
+                this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'turn', parseInt(this.turn.current.value));
                 break;
             case 'instructions':
                 this.props.updateGroupData(this.props.activeSide, this.props.panelType, this.props.group.id, 'instructions', this.instructions.current.value);
@@ -55,6 +59,7 @@ class CounterGroup extends React.PureComponent {
         if (this.props.panelType === Panels.INITIAL_PLACEMENTS) {
             return (
                 <div>
+                    ELR: <input type="text" ref={this.elr} name="elr" onBlur={this.handleUpdateGroupData} /><br />
                     Instructions:<br />
                     <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateGroupData} />
                 </div>
@@ -62,7 +67,8 @@ class CounterGroup extends React.PureComponent {
         } else {
             return (
                 <div>
-                    Turn: <input type="text" ref={this.turn} onBlur={this.handleUpdateCounterGroupData} /><br />
+                    Turn: <input type="text" ref={this.turn} name="turn" onBlur={this.handleUpdateGroupData} /><br />
+                    ELR: <input type="text" ref={this.elr} name="elr" onBlur={this.handleUpdateGroupData} /><br />
                     Instructions:<br />
                     <textarea className="counter-group-instructions" name="instructions" ref={this.instructions} onBlur={this.handleUpdateGroupData} />
                 </div>
@@ -73,6 +79,7 @@ class CounterGroup extends React.PureComponent {
     render() {
         if (this.instructions.current) {
             this.instructions.current.value = this.props.group.instructions;
+            this.elr.current.value = this.props.group.elr;
         }
 
         if (this.turn.current) {

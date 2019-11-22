@@ -41,31 +41,31 @@ const retrieveLosData = (dispatch, gameState) => {
 
 export const retrieveGame = (type, gameId, playerId, turn, phasingPlayerId, phase) => {
     return (dispatch) => {
-        if (type === 'test') {
-            axios.get('/games/test.json')
-                .then(res => {
-                    res.data.gameId = gameId;
-                    res.data.currentPlayer = playerId;
-                    res.data.phasingPlayer = phasingPlayerId;
-                    res.data.currentPhase = phase;
-                    if (phase !== Phases.INITIAL_PLACEMENT) {
-                        res.data.gameMode = GameModes.NORMAL;
-                    }
-                    res.data.currentTurn = (turn === -1) ? 1 : turn;
-                    retrieveScenario(dispatch, res.data);
-                });
-        } else {
-            if (turn === -1) {
-                axios.get(`/games/game-${gameId}-${playerId}.json`)
-                    .then(res => {
-                        retrieveScenario(dispatch, res.data);
-                    });
-            } else {
-                axios.get(`/games/game-${gameId}-${playerId}-${turn}.json`)
-                    .then(res => {
-                        retrieveScenario(dispatch, res.data);
-                    });
-            }
-        }
+    //     if (type === 'test') {
+    //         axios.get('/games/test.json')
+    //             .then(res => {
+    //                 res.data.gameId = gameId;
+    //                 res.data.currentPlayer = playerId;
+    //                 res.data.phasingPlayer = phasingPlayerId;
+    //                 res.data.currentPhase = phase;
+    //                 if (phase !== Phases.INITIAL_PLACEMENT) {
+    //                     res.data.gameMode = GameModes.NORMAL;
+    //                 }
+    //                 res.data.currentTurn = (turn === -1) ? 1 : turn;
+    //                 retrieveScenario(dispatch, res.data);
+    //             });
+    //     } else {
+    //         if (turn === -1) {
+    //             axios.get(`/games/game-${gameId}-${playerId}.json`)
+    //                 .then(res => {
+    //                     retrieveScenario(dispatch, res.data);
+    //                 });
+    //         } else {
+    //             axios.get(`/games/game-${gameId}-${playerId}-${turn}.json`)
+    //                 .then(res => {
+    //                     retrieveScenario(dispatch, res.data);
+    //                 });
+    //         }
+    //     }
     };
 };
