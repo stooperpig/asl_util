@@ -21,7 +21,7 @@ class Menu extends React.PureComponent {
     }
 
     handleEdit() {
-        this.props.editScenario('s1');
+        this.props.editScenario('s2');
     }
 
     handleDelete() {
@@ -33,7 +33,7 @@ class Menu extends React.PureComponent {
     }
 
     handleSaveGame() {
-        this.props.saveGame();
+        this.props.saveGame(1);
     }
 
     render() {

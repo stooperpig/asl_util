@@ -1,5 +1,5 @@
 import { CREATE_SCENARIO, EDIT_SCENARIO } from '../../constants/action-types';
-import { CounterTypes, ImageMap } from '../../constants/counter-types';
+import { CounterTypes, ImageMap, Sides } from '../../constants/counter-types';
 import { DefaultBoardProperties, DefaultImageMap } from '../../constants/game-constants';
 import axios from 'axios';
 
@@ -83,6 +83,7 @@ export const saveScenario = () => {
         });
 
         setMapProperties(scenario);
+        scenario.hookFile = (scenario.hookFile && scenario.hookFile.length > 0) ? scenario.hookFile : null;
 
         axios.post('/saveScenario', scenario)
             .then(function (res) {
@@ -186,32 +187,29 @@ const calculateColumnNumber = (columnLetter) => {
     return columnNumber;
 }
 
-export const saveGame = () => {
+export const saveGame = (gameId) => {
     return (dispatch, getState) => {
         let state = getState();
         let scenario = { ...state.scenario };
         let game = {
             commState: "READY",
-            gameId: 100,
+            gameId: gameId,
             losMode: false,
-            firstSetUpPlayer: 1,
-            startingPlayer: 0,
-            attackingPlayer: 0,
-            defendingPlayer: 1,
             currentPlayer: 0,
-            phasingPlayer: 1,
             players: [
                 {
                     id: 0,
                     name: "Bill",
                     side: "axis",
-                    nationality: "ge"
+                    nationality: "ge",
+                    label: "German"
                 },
                 {
                     id: 1,
                     name: "MJ",
                     side: "allied",
-                    nationality: "am"
+                    nationality: "ru",
+                    label: "Russian"
                 }
             ],
             currentTurn: 1,
@@ -220,15 +218,46 @@ export const saveGame = () => {
             targetGroups: null,
             fireGroups: null,
             targetHex: null,
-            scenarioName: "scenario-s1.json"
+            scenarioName: `scenario-${scenario.id}.json`
         };
 
-        if (scenario.axis.initialPlacements.length > 0 || scenario.allied.initialPlacements.length > 0) {
+        let axisHasInitialPlacement = scenario.axis.initialPlacements.length > 0;
+        let alliedHasInitialPlacement = scenario.allied.initialPlacements.length > 0;
+
+        if (axisHasInitialPlacement || alliedHasInitialPlacement) {
             game.gameMode = "PREPARE_INITIAL_PLACEMENT";
             game.currentPhase = "InitialPlacement";
+
+            if (axisHasInitialPlacement && scenario.setsupFirst === Sides.AXIS) {
+                game.firstSetUpPlayer = 0;
+                game.phasingPlayer = 0;
+                if (alliedHasInitialPlacement) {
+                    game.secondSetUpPlayer = 1;
+                }
+            } else if (alliedHasInitialPlacement && scenario.setsupFirst === Sides.ALLIED) {
+                game.firstSetUpPlayer = 1;
+                game.phasingPlayer = 1;
+                if (axisHasInitialPlacement) {
+                    game.secondSetUpPlayer = 0;
+                }
+            }
         } else {
             game.gameMode = "NORMAL";
             game.currentPhase = "Rally";
+        }
+
+        if (scenario.movesFirst === Sides.AXIS) {
+            game.startingPlayer = 0;
+            game.attackingPlayer =  0;
+            game.defendingPlayer = 1;
+        } else {
+            game.startingPlayer = 1;
+            game.attackingPlayer =  1;
+            game.defendingPlayer = 0;
+        }
+
+        if (game.phasingPlayer == null) {
+            game.phasingPlayer = game.startingPlayer;
         }
 
         game.counters = {};
@@ -262,15 +291,15 @@ const addCounterGroupsAndCountersToGame = (scenario, game, side, nextCounterId) 
         initialPlacement.counters.forEach(counterData => {
             let typeData = {
                 counterType: counterData.counterType,
-                quantity: counterData.quantity,
                 counterIds: []
             }
 
             counterGroup.counters.push(typeData);
-            for(let i = 0; i < counterData.quantity; ++i) {
+            for (let i = 0; i < counterData.quantity; ++i) {
                 let counter = {
                     id: nextCounterId,
                     counterType: typeData.counterType,
+                    side: side,
                     nationality: scenario.counterTypes[typeData.counterType].nationality.code,
                     elr: initialPlacement.elr,
                     selected: false
@@ -293,15 +322,15 @@ const addCounterGroupsAndCountersToGame = (scenario, game, side, nextCounterId) 
         reinforcement.counters.forEach(counterData => {
             let typeData = {
                 counterType: counterData.counterType,
-                quantity: counterData.quantity,
                 counterIds: []
             }
 
             counterGroup.counters.push(typeData);
-            for(let i = 0; i < counterData.quantity; ++i) {
+            for (let i = 0; i < counterData.quantity; ++i) {
                 let counter = {
                     id: nextCounterId,
                     counterType: typeData.counterType,
+                    side: side,
                     nationality: scenario.counterTypes[typeData.counterType].nationality.code,
                     elr: reinforcement.elr,
                     selected: false

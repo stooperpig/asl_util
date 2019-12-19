@@ -17,6 +17,7 @@ class GeneralDataPanel extends React.PureComponent {
         this.scenarioName = React.createRef();
         this.scenarioId = React.createRef();
         this.numberOfTurns = React.createRef();
+        this.hookFile = React.createRef();
         //this.state = {
         //    scenarioName:'biteme'
         //};
@@ -26,6 +27,7 @@ class GeneralDataPanel extends React.PureComponent {
         this.scenarioName.current.value = this.props.scenario.name;
         this.scenarioId.current.value = this.props.scenario.id;
         this.numberOfTurns.current.value = this.props.scenario.numberOfTurns;
+        this.hookFile.current.value = this.props.scenario.hookFile? this.props.scenario.hookFile : '';
     }
 
     handleUpdateScenarioData(event) {
@@ -40,18 +42,25 @@ class GeneralDataPanel extends React.PureComponent {
             case 'numberOfTurns':
                 this.props.updateScenarioData('numberOfTurns', parseInt(this.numberOfTurns.current.value));
                 break;
+            case 'hookFile':
+                this.props.updateScenarioData('hookFile', this.hookFile.current.value);
+                break;
             default:
                 break;
         }
     }
 
-    handleUpdateScenarioId() {
-        this.props.updateScenarioData('id', this.scenarioId.current.value);
-    }
+    // handleUpdateScenarioId() {
+    //     this.props.updateScenarioData('id', this.scenarioId.current.value);
+    // }
 
-    handleUpdateNumberOfTurns() {
-        this.props.updateScenarioData('numberOfTurns', parseInt(this.numberOfTurns.current.value));
-    }
+    // handleUpdateNumberOfTurns() {
+    //     this.props.updateScenarioData('numberOfTurns', parseInt(this.numberOfTurns.current.value));
+    // }
+
+    // handleUpdateHookFile() {
+    //     this.props.updateScenarioData('hookFile', parseInt(this.hookFile.current.value));
+    // }
 
     handleSetSetsupFirst(side) {
         this.props.updateScenarioData('setsupFirst', side);
@@ -84,6 +93,7 @@ class GeneralDataPanel extends React.PureComponent {
             this.scenarioName.current.value = this.props.scenario.name;
             this.scenarioId.current.value = this.props.scenario.id;
             this.numberOfTurns.current.value = this.props.scenario.numberOfTurns;
+            this.hookFile.current.value = this.props.scenario.hookFile? this.props.scenario.hookFile : '';
         }
 
         let axisNationalities = this.buildNationalityFlags(this.props.scenario.axis.nationalityCodes);
@@ -94,6 +104,7 @@ class GeneralDataPanel extends React.PureComponent {
                 <label>Scenario Id: <input type="text" name="scenarioId" ref={this.scenarioId} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>Scenario Name: <input type="text" name="scenarioName" ref={this.scenarioName} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>Number of Turns: <input type="text" name="numberOfTurns" ref={this.numberOfTurns} onBlur={this.handleUpdateScenarioData} /></label><br />
+                <label>Hook File: <input type="text" name="hookFile" ref={this.hookFile} onBlur={this.handleUpdateScenarioData} /></label><br />
                 <label>
                     Axis Nationalities:
                     <ToggleButton label={Nationalities.GERMAN.label} activationValue={Nationalities.GERMAN.code} currentValue={axisNationalities.GERMAN} handleClick={this.handleUpdateAxisNationalities} />
