@@ -1,5 +1,5 @@
 import { CREATE_SCENARIO, EDIT_SCENARIO } from '../../constants/action-types';
-import { CounterTypes, ImageMap, Sides } from '../../constants/counter-types';
+import { CounterTypes, ImageMap, Sides, Nationalities } from '../../constants/counter-types';
 import { DefaultBoardProperties, DefaultImageMap } from '../../constants/game-constants';
 import axios from 'axios';
 
@@ -191,27 +191,15 @@ export const saveGame = (gameId) => {
     return (dispatch, getState) => {
         let state = getState();
         let scenario = { ...state.scenario };
+
+        let players = buildPlayers(scenario);
+
         let game = {
             commState: "READY",
             gameId: gameId,
             losMode: false,
             currentPlayer: 0,
-            players: [
-                {
-                    id: 0,
-                    name: "Bill",
-                    side: "axis",
-                    nationality: "ge",
-                    label: "German"
-                },
-                {
-                    id: 1,
-                    name: "MJ",
-                    side: "allied",
-                    nationality: "ru",
-                    label: "Russian"
-                }
-            ],
+            players: players,
             currentTurn: 1,
             message: null,
             displayCounters: true,
@@ -276,6 +264,36 @@ export const saveGame = (gameId) => {
             .catch(function (err) {
                 console.log(err.data);
             });
+    };
+}
+
+const buildPlayers = (scenario) => {
+    debugger;
+    let players = [];
+    players[0] = buildPlayer(0, 'axis', scenario.axis.nationalityCodes);
+    players[1] = buildPlayer(1, 'allied', scenario.allied.nationalityCodes);
+    return players;
+}
+
+const buildPlayer = (id, side, nationalities) => {
+    let label = '';
+    if (nationalities.length > 1) {
+        label = (side === 'axis')?Sides.AXIS: Sides.ALLIED; 
+    } else {
+        for(const nationality in Nationalities) {
+            if (Nationalities[nationality].code === nationalities[0]) {
+                label = Nationalities[nationality].label;
+                break;
+            }
+        }
+    }
+
+    return {
+        id: id,
+        name: `player${id}`,
+        side: side,
+        nationality: nationalities[0],
+        label: label
     };
 }
 
